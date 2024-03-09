@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-def coordinates(cust_file: str, depot_file: str) -> tuple[np.ndarray[float]]:
+def coordinates(cust_file: str, depot_file: str) -> tuple[list[float]]:
     """
     Return a tuple (lat, lon)
     where lat[0], lon[0] is the coordinate of the depot and lat[1:], lon[1:] are
