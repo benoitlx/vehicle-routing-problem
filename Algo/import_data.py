@@ -8,7 +8,7 @@ def coordinates(cust_file: str, depot_file: str) -> tuple[list[float]]:
     where lat[0], lon[0] is the coordinate of the depot and lat[1:], lon[1:] are
     the coordinates of the customers
     """
-    prefix = "vehicle-routing-problem/Data/"
+    prefix = "Data/"
     df_cust = pd.read_excel(prefix + cust_file)
     df_depot = pd.read_excel(prefix + depot_file)
 
