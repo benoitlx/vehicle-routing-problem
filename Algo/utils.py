@@ -1,7 +1,6 @@
 from random import shuffle
 from import_data import *
 import matplotlib.pyplot as plt
-from matplotlib import colormaps
 
 def random_cycles(n: int, m: int) -> list[list[int]]:
     """
