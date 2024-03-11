@@ -32,7 +32,6 @@ def visualize_coordinates(lat: list[float], lon: list[float]) -> None:
     colormap = np.array(['r', 'b'])
     sizemap = np.array([100, 10])
     plt.scatter(lat, lon, s=sizemap[cat], c=colormap[cat])
-    plt.show()
 
 
 if __name__ == "__main__":
