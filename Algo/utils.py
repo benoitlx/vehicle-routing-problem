@@ -35,13 +35,16 @@ def random_float_cycles(n: int, m: int) -> cycles:
     return np.array([randint(0, m-1) + uniform(0, 1) for _ in range(n)])
 
 def float_cycles_to_indices(c: cycles, m: int) -> list[list[int]]:
-    cycles = [[] for _ in range(m)]
+    cyc = [[0] for _ in range(m)]
     indices = np.argsort(c) # O(n log n)
     for i in indices:
         vehicle_id = floor(c[i])
-        cycles[vehicle_id].append(i)
+        cyc[vehicle_id].append(i+1)
 
-    return cycles
+    for i in range(len(cyc)):
+        cyc[i].append(0)
+
+    return cyc
 
 
 def distance_squared(a: tuple[float], b: tuple[float]) -> float:
