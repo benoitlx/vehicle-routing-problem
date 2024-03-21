@@ -2,26 +2,33 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-def coordinates(cust_file: str, depot_file: str) -> tuple[list[float]]:
+
+def extract_file_info(cust_file, depot_file):
     """
-    Return a tuple (lat, lon)
+    Return a tuple (code, lat, lon)
     where lat[0], lon[0] is the coordinate of the depot and lat[1:], lon[1:] are
     the coordinates of the customers
     """
-    prefix = "Data/"
-    df_cust = pd.read_excel(prefix + cust_file)
+    prefix = '../Data/'
+    df_cust = pd.read_excel(prefix + cust_file).drop_duplicates(subset = ['CUSTOMER_CODE'])
     df_depot = pd.read_excel(prefix + depot_file)
 
+    code = list(df_cust["CUSTOMER_CODE"].to_numpy())
     lat = list(df_cust["CUSTOMER_LATITUDE"].to_numpy())
     lon = list(df_cust["CUSTOMER_LONGITUDE"].to_numpy())
 
     lat_depot = df_depot["DEPOT_LATITUDE"].to_numpy()[0]
     lon_depot = df_depot["DEPOT_LONGITUDE"].to_numpy()[0]
 
+    code.insert(0, 0)
     lat.insert(0, lat_depot)
     lon.insert(0, lon_depot)
 
-    return lat, lon
+    return code, lat, lon
+
+def coordinates(cust_file: str, depot_file: str) -> tuple[list[float]]:
+    code, lat, lon = extract_file_info(cust_file, depot_file)
+    return list(zip(code, lat, lon))
 
 def visualize_coordinates(lat: list[float], lon: list[float]) -> None:
     """
