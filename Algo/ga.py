@@ -32,6 +32,7 @@ class GA():
         TODO 
         - sort cycles and get sorted indices
         - indices -> score
+        O(n log n)
         """
 
         cyc = float_cycles_to_indices(c, self.m)
@@ -53,15 +54,16 @@ class GA():
     def crossover(self, p1: cycles, p2: cycles) -> cycles:
         """
         @retval a cycles sharing similarity with p1 and p2
+        O(n)
         """
         return [p1[i] if uniform(0, 1) >= self.cross_proba else p2[i] for i in range(self.n)] 
 
     def next_gen(self, pop: list[cycles]) -> list[cycles]:
         """
-        TODO
         - Select random individuals in pop
         - Class these individuals by fitness (priority queue insertion)
         - Reproduce best individuals while next_pop size <= pop_size
+        O(np log n)
         """
         # selection = sample(pop, int(self.pop_size/self.select_ratio))
 
@@ -79,6 +81,9 @@ class GA():
         return next_gen
 
     def evolve(self) -> None:
+        """
+        O(npi log n)
+        """
         pop = self.init_pop
         for _ in range(self.iteration):
             #print(pop)
@@ -88,6 +93,10 @@ class GA():
         self.final_pop = pop
 
     def final_cycles(self) -> cycles:
+        """
+        IDEA: on pourrait choisir le meilleur
+        O(1)
+        """
         return self.final_pop[0] 
 
 

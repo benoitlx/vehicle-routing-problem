@@ -13,6 +13,7 @@ def random_cycles(n: int, m: int) -> list[list[int]]:
 
     @return-value
     a list of list of index representing the cycles of each vehicles
+    O(n)
     """
     
     cycles = [[] for _ in range(m)]
@@ -32,9 +33,15 @@ def random_cycles(n: int, m: int) -> list[list[int]]:
     return cycles
 
 def random_float_cycles(n: int, m: int) -> cycles:
+    """
+    O(n)
+    """
     return np.array([randint(0, m-1) + uniform(0, 1) for _ in range(n)])
 
 def float_cycles_to_indices(c: cycles, m: int) -> list[list[int]]:
+    """
+    O(n log n)
+    """
     cyc = [[0] for _ in range(m)]
     indices = np.argsort(c) # O(n log n)
     for i in indices:
@@ -48,9 +55,15 @@ def float_cycles_to_indices(c: cycles, m: int) -> list[list[int]]:
 
 
 def distance_squared(a: tuple[float], b: tuple[float]) -> float:
+    """
+    O(1)
+    """
     return (a[0]-b[0])**2 + (a[1]-b[1])**2
 
 def visualize_cycles(cycles: list[list[int]], lat: list[float], lon: list[float]) -> None:
+    """
+    O(n)
+    """
     visualize_coordinates(lat, lon)
     X = [] 
     Y = []

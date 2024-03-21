@@ -7,6 +7,7 @@ def coordinates(cust_file: str, depot_file: str) -> tuple[list[float]]:
     Return a tuple (lat, lon)
     where lat[0], lon[0] is the coordinate of the depot and lat[1:], lon[1:] are
     the coordinates of the customers
+    O(n)
     """
     prefix = "Data/"
     df_cust = pd.read_excel(prefix + cust_file)
@@ -27,6 +28,7 @@ def visualize_coordinates(lat: list[float], lon: list[float]) -> None:
     """
     Display in red the depot and in blue customers
     TODO add google maps visualization
+    O(n)
     """
     cat = np.array([0] + ([1] * (len(lat)-1)))
     colormap = np.array(['r', 'b'])
