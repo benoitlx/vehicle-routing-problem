@@ -1,7 +1,7 @@
 from utils import * 
 from import_data import * 
 import numpy as np
-from random import uniform, sample 
+from random import uniform, sample, choice 
 
 class GA():
 
@@ -18,9 +18,12 @@ class GA():
         self.cross_proba = proba
         self.final_pop = None
 
+        self.scores = []
+
     def gen_initial_pop(self) -> list[cycles]:
         """
         @retval a list of pop_size cycles representing the population
+        O(np) where n is the number of customers and p the population size
         """
         return [random_float_cycles(self.n, self.m) for _ in range(self.pop_size)]
 
@@ -61,14 +64,17 @@ class GA():
         - Reproduce best individuals while next_pop size <= pop_size
         """
         # selection = sample(pop, int(self.pop_size/self.select_ratio))
-        next_gen = []
 
+        next_gen = []
         while len(next_gen) < self.pop_size:
-            sub_select = sorted(sample(pop, 6), key=lambda x:self.fitness(x))
-            p1 = sub_select[0]
-            p2 = sub_select[1]
+            sub_select = sorted(sample(pop, 10), key=lambda x:self.fitness(x))
+            sub_select = sub_select[:5]
+            p1 = choice(sub_select) 
+            p2 = choice(sub_select)
 
             next_gen.append(self.crossover(p1, p2))
+
+        self.scores.append(self.fitness(next_gen[0]))
 
         return next_gen
 
@@ -90,15 +96,23 @@ if __name__ == "__main__":
 
     lat = [0]
     lon = [0]
-    for _ in range(20):
+    for _ in range(30):
         lat.append(uniform(-5, 5))
         lon.append(uniform(-5, 5))
 
     n = len(lat) - 1
-    m = 3
+    m = 4 
 
-    g = GA(lat, lon, 60, m, 1000, 0.7)
+    # + pop_size => + diversity
+    # + iteration => less chance of missing good solution
+
+    # Remarque: je pense que la diversité disparait trop vite
+
+    g = GA(lat, lon, 150, m, 80, 0.25)
     g.evolve()
     c = g.final_cycles()
+    Y = g.scores
+    plt.plot(list(range(len(Y))), Y)
+    plt.show()
     visualize_cycles(float_cycles_to_indices(g.init_pop[0], m), lat, lon)
     visualize_cycles(float_cycles_to_indices(c, m), lat, lon)
