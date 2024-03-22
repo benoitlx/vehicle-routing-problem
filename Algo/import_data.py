@@ -15,14 +15,16 @@ def coordinates(cust_file: str, depot_file: str) -> tuple[list[float]]:
 
     lat = list(df_cust["CUSTOMER_LATITUDE"].to_numpy())
     lon = list(df_cust["CUSTOMER_LONGITUDE"].to_numpy())
+    id = list(df_cust["CUSTOMER_LONGITUDE"].to_numpy())
 
     lat_depot = df_depot["DEPOT_LATITUDE"].to_numpy()[0]
     lon_depot = df_depot["DEPOT_LONGITUDE"].to_numpy()[0]
 
+    id.insert(0, 0)
     lat.insert(0, lat_depot)
     lon.insert(0, lon_depot)
 
-    return lat, lon
+    return list(zip(id, lat, lon))
 
 def visualize_coordinates(lat: list[float], lon: list[float]) -> None:
     """
