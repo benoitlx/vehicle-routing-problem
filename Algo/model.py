@@ -25,7 +25,7 @@ class ModelVRPTW(Model):
 
         self.best_cost=random.choice(self.population)[0]
 
-        #Skidoule
+        #Schedule
         self.schedule = SimultaneousActivation(self)
 
         #Créer agents Recuit
