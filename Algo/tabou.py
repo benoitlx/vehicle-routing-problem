@@ -1,6 +1,83 @@
 import numpy as np
 import random as rd
 import matplotlib.pyplot as plt
+
+class Client:
+    def __init__(self, id, demand, x, y):
+        self.id = id
+        self.demand = demand
+        self.x = x
+        self.y = y
+
+    def distance_to(self, other_client):
+        return np.sqrt((self.x - other_client.x)**2 + (self.y - other_client.y)**2)
+
+class Vehicle:
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.route = []
+
+    def add_client(self, client):
+        self.route.append(client)
+
+    def total_distance(self):
+        total = 0
+        for i in range(len(self.route) - 1):
+            total += self.route[i].distance_to(self.route[i+1])
+        return total
+
+class Solution:
+    def __init__(self, clients, vehicles):
+        self.clients = clients
+        self.vehicles = vehicles
+
+    def evaluate(self):
+        total_distance = 0
+        for vehicle in self.vehicles:
+            total_distance += vehicle.total_distance()
+        return total_distance
+
+class Algorithme:
+    def __init__(self, clients, capacity, nb_vehicles):
+        self.clients = clients
+        self.capacity = capacity
+        self.nb_vehicles = nb_vehicles
+
+    def initial_solution(self):
+        vehicles = []
+        clients_copy = self.clients.copy()
+        rd.shuffle(clients_copy)
+        for i in range(self.nb_vehicles):
+            vehicle = Vehicle(self.capacity)
+            vehicle.add_client(self.clients[0])  # Ajouter le dépôt au début de chaque itinéraire
+            vehicles.append(vehicle)
+        i = 1
+        for client in clients_copy:
+            vehicles[i % self.nb_vehicles].add_client(client)
+            i += 1
+        return Solution(self.clients, vehicles)
+
+    def run(self, max_iterations):
+        best_solution = self.initial_solution()
+        current_solution = best_solution
+        for i in range(max_iterations):
+            # Implémentez votre logique d'algorithme ici
+            pass
+        return best_solution
+
+# Exemple d'utilisation des classes
+nb_client = 21
+demandes_clients = np.random.randint(1, 20, size=nb_client)
+coordonnees_clients = np.random.rand(nb_client, 2)
+
+clients = [Client(i, demandes_clients[i], coordonnees_clients[i][0], coordonnees_clients[i][1]) for i in range(nb_client)]
+
+algorithm = Algorithme(clients, capacity=100, nb_vehicles=3)
+best_solution = algorithm.run(max_iterations=1000)
+print("Meilleure solution trouvée:", best_solution.evaluate())
+"""import numpy as np
+import random as rd
+import matplotlib.pyplot as plt
 #donnée du problème choisi de manière aléatroire : à terme les changer par les données du data-set
 nb_client = 20 #nombre de client
 demandes_clients = np.random.randint(1, 20, size=nb_client) #demande des clients i.e les points à visiter : ici aléatoire
@@ -148,7 +225,7 @@ plt.show()
 
 
 
-"""
+
 #version précédente
 import numpy as np
 import random as rd
