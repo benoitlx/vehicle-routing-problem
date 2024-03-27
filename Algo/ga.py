@@ -2,10 +2,12 @@ from utils import *
 from import_data import * 
 import numpy as np
 from random import uniform, sample, choice 
+import mesa
 
-class GA():
+class GA(mesa.Agent):
 
-    def __init__(self, lat: list[float], lon: list[float], size: int, vehicle_num: int, iteration: int, proba: float) -> None:
+    def __init__(self, id, model, lat: list[float], lon: list[float], size: int, vehicle_num: int, iteration: int, proba: float) -> None:
+        super().__init__(id, model)
         self.lat = lat
         self.lon = lon
         self.n = len(lat) - 1
@@ -16,9 +18,11 @@ class GA():
         self.pop_size = size
         self.init_pop = self.gen_initial_pop()
         self.cross_proba = proba
-        self.final_pop = None
+        self.final_pop = self.init_pop 
 
         self.scores = []
+        self.score = None
+        self.solution = None
 
     def gen_initial_pop(self) -> list[cycles]:
         """
@@ -77,6 +81,7 @@ class GA():
             next_gen.append(self.crossover(p1, p2))
 
         self.scores.append(self.fitness(next_gen[0]))
+        self.score = self.fitness(next_gen[0])
 
         return next_gen
 
@@ -98,6 +103,19 @@ class GA():
         O(1)
         """
         return self.final_pop[0] 
+
+    def step(self):
+        self.final_pop = self.next_gen(self.final_pop)
+        self.solution = self.final_pop[0]
+
+    def contact(self):
+        for agent in self.model.schedule.agents:
+            if agent.score < self.score:
+                for i in range(len(self.final_pop)):
+                    if uniform(0, 1) <= 0.2:
+                        self.final_pop[i] = agent.solution
+
+
 
 
 if __name__ == "__main__":
