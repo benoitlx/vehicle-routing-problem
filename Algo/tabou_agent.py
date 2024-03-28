@@ -1,6 +1,8 @@
 import numpy as np
 import random as rd
 import matplotlib.pyplot as plt
+from mesa import Agent
+
 #donnée du problème choisi de manière aléatroire : à terme les changer par les données du data-set
 nb_client = 20 #nombre de client
 demandes_clients = np.random.randint(1, 20, size=nb_client) #demande des clients i.e les points à visiter : ici aléatoire
@@ -146,7 +148,7 @@ plt.plot(L_d)
 plt.show()
 
 class OptTabouAgent(Agent):
-    def __init__(self, s_initial):
+    def __init__(self, unique_id, model, s_initial):
         super().__init__(unique_id, model)        
         self.cost = s_initial[0]
         self.solution = s_initial[1]

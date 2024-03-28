@@ -35,11 +35,8 @@ class ModelVRPTW(Model):
             self.schedule.add(agent)
         
         #Créer agents Tabou
-        for i in range(int(self.NTB)):
-            solution_test = random.choice(self.population)
-            agent = OptTabouAgent(solution_test)
-            self.schedule.add(agent)
-        
+
+
         #Créer agents Génétique 
             
         
