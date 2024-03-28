@@ -20,8 +20,7 @@ def inter_route_shift(L):
     if len(L[i]) == 2:
         L.pop(i)
     L[j] = L[j][:l] + [x] + L[j][l:]
-    print(L)
-    return 
+    return L
 
 def two_intra_route_swap(L):
     """fonction de voisinage qui
@@ -36,7 +35,7 @@ def two_intra_route_swap(L):
     L_index_2 = [j for j in range(1, len(L[i]) - 1) if (j != k and j != k+1)]
     l = random.choice(L_index_2)
     L[i][k], L[i][k+1], L[i][l], L[i][l+1] = L[i][l], L[i][l+1], L[i][k], L[i][k+1]
-    return
+    return L
 
 def two_intra_route_shift(L):
     """Two Intra-Route Shift: fonction de voisinage
@@ -48,14 +47,11 @@ def two_intra_route_shift(L):
     une autre position de la même route"""
     L_index = [i for i in range(len(L)) if len(L[i]) >= 5]
     i = random.choice(L_index)
-    print(i)
     j = random.randint(1, len(L[i])-3)
-    print(j)
     x, y = L[i].pop(j), L[i].pop(j)
     k = random.randint(1, len(L[i])-2)
     L[i] = L[i][:k] + [x, y] + L[i][k:]
-    print(L)
-    return L    
+    return L  
 
-L1 = [[0, 1, 2, 3, 4, 5, 6, 7, 0], [0, 1, 2, 3, 0], [0, 1, 2, 3, 4, 5, 0]]
-two_intra_route_shift(L1)
+#L1 = [[0, 1, 2, 3, 4, 5, 6, 7, 0], [0, 1, 2, 3, 0], [0, 1, 2, 3, 4, 5, 0]]
+#two_intra_route_shift(L1)
