@@ -118,7 +118,7 @@ inf = 0
 nb_max = 1000
 L_d = []
 
-def tabou(s_initial):
+def tabou(s,nb_max):
     while eval_sol(s) > inf and (nbiter - meil_iter < nb_max):
         nbiter += 1
         E = ensemble_mouvement(s, T)
