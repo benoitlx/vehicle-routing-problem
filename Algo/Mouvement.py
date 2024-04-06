@@ -267,7 +267,7 @@ class mouvement:
     
 
     def Action(self,s):
-        a = rd.randint(0,5)
+        a = rd.randint(0,7)
         #a = 1
         Indice_0 = self.find_zero(s)
         if a ==0:
