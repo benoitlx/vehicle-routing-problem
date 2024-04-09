@@ -1,11 +1,11 @@
 import random
-from copy import deepcopy
+import copy
 
 def intra_route_swap(L1):
     """échange d'un client
     avec un autre client dans la même
     route"""
-    L = L1.deepcopy()
+    L = copy.deepcopy(L1)
     i = random.randint(0, len(L)-1)
     j = random.randint(1, len(L[i])-2)
     k = random.randint(1, len(L[i])-2)
@@ -17,7 +17,7 @@ def inter_route_swap(L):
     qui effectue le déplacement d'échange
     d'un client d’une route avec un client
     d’une autre route"""
-    L = L1.deepcopy()
+    L = copy.deepcopy(L1)
     i, j = random.randint(0, len(L)-1), random.randint(0, len(L)-1)
     k, l = random.randint(1, len(L[i])-2), random.randint(1, len(L[j])-2)
     L[i][k], L[j][l] = L[j][l], L[i][k]
@@ -27,7 +27,7 @@ def intra_route_shift(L1):
     """fonction de voisinage qui effectue
     le déplacement d'un client vers une autre position sur la
     même route"""
-    L = L1.deepcopy()
+    L = copy.deepcopy(L1)
     i = random.randint(0, len(L)-1)
     j = random.randint(1, len(L[i])-2)
     x = L[i].pop(j)
@@ -38,7 +38,7 @@ def intra_route_shift(L1):
 def inter_route_shift(L1):
     """ fonction de voisinage qui effectue
     le déplacement d'un client d’une route à une autre"""
-    L = L1.deepcopy()
+    L = copy.deepcopy(L1)
     i, j = random.randint(0, len(L)-1), random.randint(0, len(L)-1)
     k, l = random.randint(1, len(L[i])-2), random.randint(1, len(L[j])-2)
     x = L[i].pop(k)
@@ -54,7 +54,7 @@ def two_intra_route_swap(L1):
     Cependant, dans la fonction Two Intra-Route Swap,
     deux clients consécutifs sont échangés avec deux autres
     clients consécutifs de la même route"""
-    L = L1.deepcopy()
+    L = copy.deepcopy(L1)
     L_index = [i for i in range(len(L)) if len(L[i]) >= 6]
     i = random.choice(L_index)
     k = random.randint(1, len(L[i])-3)
@@ -71,7 +71,7 @@ def two_intra_route_shift(L1):
     Two Intra-Route Shift, deux clients consécutifs
     sont retirés de leur position et réinsérés dans
     une autre position de la même route"""
-    L = L1.deepcopy()
+    L = copy.deepcopy(L1)
     L_index = [i for i in range(len(L)) if len(L[i]) >= 5]
     i = random.choice(L_index)
     j = random.randint(1, len(L[i])-3)
@@ -84,7 +84,7 @@ def elimine_petite_route(L1):
     """ fonction de
     voisinage qui cherche à éliminer la plus petite
     route de la solution"""
-    L = L1.deepcopy()
+    L = copy.deepcopy(L1)
     min, indice_min = len(L[0]), 0
     if len(L) != 1:
         for i in range(1, len(L)):
@@ -103,7 +103,7 @@ def elimine_route(L1):
     de la même manière que la fonction Élimine la
     route la plus petite, mais la route à supprimer est
     choisi au hasard"""
-    L = L1.deepcopy()
+    L = copy.deepcopy(L1)
     i = random.randint(0, len(L)-1)
     X = L.pop(i)
     for x in X[1:len(X)-1]:
@@ -113,4 +113,4 @@ def elimine_route(L1):
     return L
 
 #L1 = [[0, 1, 2, 3, 4, 5, 6, 7, 0], [0, 1, 2, 3, 0], [0, 1, 2, 3, 4, 5, 0]]
-#two_intra_route_shift(L1)
+#print(elimine_petite_route(L1))
