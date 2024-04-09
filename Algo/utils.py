@@ -69,13 +69,11 @@ def gen_init_sol(cust_file, depots_file, vehicle_capacity):
     shuffle(coordinates_list)
 
     sol = []
-    for i in range(n_vehicules - 1):
+    for i in range(n_vehicules):
         sol.append([0])
-        while len(sol[i]) < vehicle_capacity + 1:
-            try:
-                sol[i].append(coordinates_list.pop(0)[0])
-            except:
-                print("Liste de coordonnées vide")
+        while len(sol[i]) < vehicle_capacity + 1 and len(coordinates_list)>0:
+            sol[i].append(coordinates_list.pop(0)[0])
+        
         sol[i].append(0)
 
     return sol
@@ -120,17 +118,20 @@ def distance_squared(a: tuple[float], b: tuple[float]) -> float:
     return (a[0]-b[0])**2 + (a[1]-b[1])**2
 
 
-def visualize_cycles(cycles: list[list[int]], lats: list[float], longs: list[float], coord_dict) -> None:
-    visualize_coordinates(lats, longs)
+def visualize_cycles(cycles: list[list[int]], lat: list[float], long: list[float]) -> None:
+    visualize_coordinates(lat, long)
     X = [] 
     Y = []
+    compteur = 0
 
-    for cycle in enumerate(cycles):
-        for code in cycle:
-            lat, long = find_coords_from_code(code, coord_dict)
-            X.append(lat)
-            Y.append(long)
-
+    for cycle in cycles:
+        #print(cycle)
+        for c in range(len(cycle)):
+            X.append(lat[compteur])
+            Y.append(long[compteur])
+            compteur +=1
+            #print(c)
+        
         plt.plot(X, Y)
         X = []
         Y = []
