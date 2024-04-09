@@ -1,0 +1,200 @@
+import numpy as np
+import random as rd
+import matplotlib.pyplot as plt
+from mesa import Agent
+from Tabou import *
+
+
+def applique_mouvement(solution, mouvmement):
+    nouvelle_solution = solution.copy()
+    i = mouvmement[0]
+    j = mouvmement[1]
+    nouvelle_solution[i], nouvelle_solution[j] = nouvelle_solution[j], nouvelle_solution[i] 
+    return nouvelle_solution
+
+def gen_vois(s,taille_vois,Tabou,max_tab):
+    
+    mvt = mouvement()
+    eval = cout(s,clients)
+    c = 0
+    b =0
+    V = []
+    while c<taille_vois:
+        sol,mv = mvt.Action(s)
+        while mv ==[]:
+            sol,mv = mvt.Action(s)
+        mv.append(eval)
+        if mv not in Tabou and sol not in V:
+            V.append((sol,mv))
+            c = c+1
+        
+        else:
+            b =b+1
+            if b>100:
+                Tabou.pop(0)
+                b=b-10
+        #Tabou.append(mv)
+    return V
+
+def best_solution(V,A):
+    n = len(V)
+    eval_min = A
+    indice_sol =0
+    for k in range(n-1):
+        val = cout(V[k][0],clients)
+        if val<eval_min:
+            eval_min = val
+            indice_sol = k
+    return V[indice_sol]
+
+def MAJ_tabou(T, max_tab):
+    n = len(T)
+    val = T[0][-1]
+    mv = T[-1]
+    #if shift_detecte(mv):
+        #T = []
+    if n>max_tab:
+        pop_worst_mouvement(T)
+    return T
+
+def pop_worst_mouvement(Tabou):
+    if not Tabou:
+        return
+    a = rd.randint(0,len(Tabou)//2-1)
+    val = Tabou[a][-1]
+    i = rd.randint(1,len(Tabou) - 1)
+
+    while i >= 0:
+        #if Tabou[i][0]<val:
+        a = rd.randint(0,len(Tabou)-1)
+        Tabou.pop(a)
+        i -= 1
+    
+
+
+def cut_sol(solution):
+    L = []
+    n = len(solution)
+    a= 0
+    for k in range(1,n):
+        if solution[k]==0:
+            L.append(solution[a:k] + [0])
+            a = k
+    return L
+
+
+
+
+def TB(s,nb_iter_max, max_tabou, taille_vois,Capacite):
+    global demande_client
+    global clients
+    B = []
+    meilleur_cout = []
+    current_cout = []
+    len_tabou = []
+    list_iter = [0]
+    capacity(s,Capacite)
+    
+    s_etoile = s.copy()
+    print(s_etoile)
+    A = cout(s_etoile,clients)
+    print(A)
+    cout_solution = A
+    meilleur_cout.append(A)
+    nbiter = 0
+    T = []
+    meil_iter = 0
+    inf = 0
+
+    while cout_solution > inf and (nbiter - meil_iter < nb_iter_max):
+        nbiter += 1
+        V = gen_vois(s.copy(),taille_vois,T,max_tabou)
+        s_prim,mv = best_solution(V,A)
+        A = mv[-1]
+        T.append(mv)
+        T = MAJ_tabou(T, max_tabou)
+        len_tabou.append(len(T))
+        current_cout.append(A)
+        s = s_prim.copy()
+        capacity(s,Capacite)
+        
+        cout_solution = cout(s,clients)
+        if cout_solution<cout(s_etoile,clients):
+            s_etoile = s.copy()
+            print(s_etoile)
+            #B.append(s_etoile)
+            #meilleur_cout.append(meilleur_cout[-1])
+            #list_iter.append(nbiter + meil_iter)
+            meilleur_cout.append(cout_solution)
+            #list_iter.append(nbiter + meil_iter)
+
+            meil_iter = nbiter
+       
+        else: 
+            meilleur_cout.append(meilleur_cout[-1])
+ 
+    S = cut_sol(s_etoile)
+    plt.figure()
+    plt.plot(current_cout)
+    plt.plot(meilleur_cout, c = 'red')
+    #plt.plot(list_iter,meilleur_cout, c = 'red')
+    #plt.figure()
+    #plt.plot(len_tabou)
+    plt.figure()
+
+    return (cout(s_etoile,clients), S)
+
+
+
+
+
+def capacity(s,C):
+    n = len(s)
+    a=0
+    for k in range(1,n-2):
+        if s[k]==0:
+            a =k+2
+            if s[k+1]==0:
+                s.pop(k)
+
+        if k-a>C:
+            s.insert(k,0)
+            a =k+2
+    if s[0]!=0:
+        s.insert(0,0)
+
+"""s = [0, 46, 9, 48, 7, 24, 19, 45, 25, 16, 20, 37, 41, 5, 42, 40, 2, 36, 17, 21, 18, 10, 1, 27, 30, 32, 34, 4, 33, 29, 39, 35, 50, 15, 8, 6, 47, 23, 3, 0]
+print(s)
+for k in range(10):
+    capacity(s,10)
+    print(s)"""
+    
+
+class OptTabouAgent(Agent):
+    def __init__(self, s_initial,nb_iter_max, max_tabou,taille_vois,Capacite):
+        #s,nb_iter_max, max_tabou, taille_vois,Capacite
+        super().__init__(unique_id, model)        
+        self.cost = s_initial[0]
+        self.solution = s_initial[1]
+        self.nb_inter_max = nb_iter_max
+        self.max_tabou = max_tabou
+        self.taille_vois = taille_vois
+        self.Capacite = Capacite
+
+
+    def contact(self):
+        mini=self.cost
+        for a in self.model.schedule.agents:
+            if a.cost<mini:
+                mini=a.cost
+                best_agent=a
+        self.solution = best_agent.solution
+        self.cost = best_agent.cost
+    
+    def step(self):
+        (new_sol, new_cost) = tabou(self.solution,self.nb_inter_max,self.max_tabou,self.taille_vois,self.Capacite)
+        self.solution = new_sol
+        self.cost = new_cost
+        self.contact()
+    
+#agent = OptTabouAgent()
