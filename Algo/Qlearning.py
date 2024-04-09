@@ -1,5 +1,6 @@
 import random
 import numpy as np
+from voisinnage import *
 
 
 # Créer fonction greedy qui détermine le temps d'exploration et le temps d'exploitation
@@ -24,8 +25,17 @@ def choose_an_action(state, type_function, epsilon, Q):
             next_state = randomAction()
     return next_state
 
-def randomAction() : 
-    a =
+def randomAction(L) : 
+    a = intra_route_swap(L)
+    b = inter_route_swap(L)
+    c = intra_route_shift(L)
+    d = inter_route_shift(L)
+    e = two_intra_route_swap(L)
+    f = two_intra_route_shift(L)
+    g = elimine_petite_route(L)
+    h = elimine_route(L)
+
+    return random.choice([a,b,c,d,e,f,g,h])
 
 class Qlearning:
     NBR_OF_ACTION = 8
