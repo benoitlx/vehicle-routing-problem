@@ -38,7 +38,7 @@ class ModelVRPTW(Model):
         #Créer agents Tabou
         for i in range(int(self.NTB)):
             solution_test = random.choice(self.population)
-            agent = OptTabouAgent(solution_test)
+            agent = OptTabouAgent(solution_test,nb_iter_max, max_tabou, taile_vois,Capacite)
             self.schedule.add(agent)
         
         #Créer agents Génétique 
