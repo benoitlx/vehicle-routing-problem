@@ -64,7 +64,10 @@ def gen_init_sol(cust_file, depots_file, vehicle_capacity):
     depots_data = coordinates_list.pop(0)
 
     n_clients = len(coordinates_list)
-    n_vehicules = n_clients//vehicle_capacity + 1
+    if n_clients % vehicle_capacity == 0 : 
+        n_vehicules = n_clients//vehicle_capacity 
+    else : 
+        n_vehicules = n_clients//vehicle_capacity + 1
 
     shuffle(coordinates_list)
 
@@ -136,7 +139,8 @@ def visualize_cycles(cycles: list[list[int]], lat: list[float], long: list[float
         X = []
         Y = []
 
-    plt.show()
+    plt.savefig("Figure")
+    plt.show(block=False)
 
 
 def swap_elements_cycle(cycles: list[list[int]]) -> list[list[int]]:
