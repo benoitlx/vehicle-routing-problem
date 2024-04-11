@@ -112,7 +112,12 @@ def random_swap(solution):
   return solution
 
 if __name__ == "__main__":
-    lat, lon = coordinates("2_detail_table_customers.xls", "4_detail_table_depots.xls")
+    coords = coordinates("2_detail_table_customers.xls", "4_detail_table_depots.xls")
+    #print(coords)
+
+    lat = [x[1] for x in coords]
+    lon = [x[2] for x in coords]
+    #lat, lon = coordinates("2_detail_table_customers.xls", "4_detail_table_depots.xls")
     """
     n = len(lat) - 1
     cycles = random_cycles(n, 8)
