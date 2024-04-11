@@ -261,8 +261,8 @@ class mouvement:
         return n_s,[8,zero]
     
 
-    def Action(self,s):
-        a = rd.randint(1,8) #choix d'une action aléatoire
+    def action(self, a, s):
+        #a = rd.randint(1,8) #choix d'une action aléatoire
         
         Indice_0 = self.find_zero(s)
         if a ==1:
