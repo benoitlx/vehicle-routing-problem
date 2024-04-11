@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import random
 from mesa import Agent
+import copy
 
 from utils import *
 
@@ -16,7 +17,7 @@ def recuit_simule(solution_initiale, coord_dict, t0 = 10,nbiter_cycle = 1e2,a = 
   # a = coefficient de refroidissement
   
   #Initialisation
-  best_solution = np.copy(solution_initiale)
+  best_solution = copy.deepcopy(solution_initiale)
   best_cost = cost(best_solution, coord_dict)
   nbiter = 0
   nouveaucycle = True
@@ -31,7 +32,7 @@ def recuit_simule(solution_initiale, coord_dict, t0 = 10,nbiter_cycle = 1e2,a = 
     while nbiter < nbiter_cycle:
       nbiter += 1
 
-      solution_voisine = np.copy(best_solution)
+      solution_voisine = copy.deepcopy(best_solution)
       solution_voisine = swap_elements_cycle(solution_voisine)
 
       #On compare le coût des deux solutions 

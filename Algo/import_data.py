@@ -12,12 +12,11 @@ def extract_file_info(cust_file, depot_file):
     """
     prefix = '../Data/'
     df_cust = pd.read_excel(prefix + cust_file).drop_duplicates(subset = ['CUSTOMER_CODE'])
-    df_petit = df_cust.iloc[0:100]
     df_depot = pd.read_excel(prefix + depot_file)
 
-    code = list(df_petit["CUSTOMER_CODE"].to_numpy())
-    lat = list(df_petit["CUSTOMER_LATITUDE"].to_numpy())
-    lon = list(df_petit["CUSTOMER_LONGITUDE"].to_numpy())
+    code = list(df_cust["CUSTOMER_CODE"].to_numpy())
+    lat = list(df_cust["CUSTOMER_LATITUDE"].to_numpy())
+    lon = list(df_cust["CUSTOMER_LONGITUDE"].to_numpy())
 
     lat_depot = df_depot["DEPOT_LATITUDE"].to_numpy()[0]
     lon_depot = df_depot["DEPOT_LONGITUDE"].to_numpy()[0]
