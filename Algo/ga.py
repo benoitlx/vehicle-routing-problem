@@ -101,7 +101,14 @@ class GA():
 
 
 if __name__ == "__main__":
-    lat, lon = coordinates("2_detail_table_customers.xls", "4_detail_table_depots.xls")
+    coords = coordinates("2_detail_table_customers.xls", "4_detail_table_depots.xls")
+    #print(coords)
+
+    lat = [x[1] for x in coords]
+    lon = [x[2] for x in coords]
+
+
+    #_, lat, lon = coordinates("2_detail_table_customers.xls", "4_detail_table_depots.xls")
 
     lat = [0]
     lon = [0]
