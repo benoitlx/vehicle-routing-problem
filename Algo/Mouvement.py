@@ -1,6 +1,8 @@
+
 import numpy as np
 import random as rd
 import matplotlib.pyplot as plt
+from utils import *
 
 
 """
@@ -23,6 +25,7 @@ jeux de test à la fin
 m = 20
 
 def cut_sol(solution):
+    """"permet de decouper une solution en plusieur route"""
     S = []
     n = len(solution)
     a= 0
@@ -33,6 +36,7 @@ def cut_sol(solution):
     return S
 
 def past_sol(solution):
+    """permet de former à partire de route une solution"""
     s = []
     S = solution[1]
     for r in S:
@@ -40,6 +44,7 @@ def past_sol(solution):
     return s
 
 def applique_mouvement(solution, mouvmement):
+    """"applique une permutation dans une route"""
     nouvelle_solution = solution.copy()
     i = mouvmement[0]
     j = mouvmement[1]
@@ -51,6 +56,8 @@ class mouvement:
         pass
 
     def find_zero(self,s):
+        """"permet de localiser les 0 (retour au depot) dans une solution:
+        utile pour identifer les differentes routes d'une solution"""
         I_0 = []
         for k in range(1,len(s)-1):
             if s[k]==0:
@@ -62,7 +69,6 @@ class mouvement:
         1. Intra-Route Swap: échange d'un client avec un autre client dans la même route (les clients 4 et 6 de la route 2 sont échangés)
         Principe : on recherche une route de plus de 3 clients, en séléctione deux clients parmis celle ci et on les permutes
         """
-        #print("Intra_Route_Swap")
         n = len(s)
         I = Indice_0.copy()
         n_s = s.copy()
@@ -73,13 +79,13 @@ class mouvement:
 
         i = rd.randint(0,len(I)-2)
         a,b = I[i],I[i+1]
-        while abs(a-b)<3 and c<10: #recherche aléatoire d'indice compatible
+        while abs(a-b)<3 and c<m: #recherche aléatoire d'indice compatible (m itération de recherche max)
             i = rd.randint(0,len(I)-2)
             a,b = I[i],I[i+1]
             c = c+1
  
         if abs(b-a)<3: 
-            return (n_s, []) #cas ou aucun indice compatible n'est trouvé
+            return (n_s, []) #cas ou aucun indice compatible n'est trouvé après les 10 iteration
         
         c,d = rd.randint(a+1,b-1),rd.randint(a+1,b-1) #selection de 2 clients
         n_s = applique_mouvement(n_s,[c,d])#permutation
@@ -93,15 +99,13 @@ class mouvement:
         +interdiction de modifier la taille de la route
         """
         #print("Inter_Route_Swap")
-        global m
         n = len(s)
         if not Indice_0:
             return (s, [])
         n_s = s.copy()
         c =0
-
         pivot = rd.choice(Indice_0)
-        while (pivot<2 or abs(n-pivot)<2) and c<m:
+        while (pivot<2 or abs(n-pivot)<2) and c<m: #recherche d'un pivot compatible (m iteration max)
             pivot = rd.choice(Indice_0) #choix d'un pivot aléatoire
             c = c+1
         if pivot<2 or (n-pivot)<3:
@@ -109,37 +113,35 @@ class mouvement:
         a = rd.randint(1,pivot-1)
         b = rd.randint(pivot+1,n-2)
         c =0
-        while (s[a]==0 or s[b]==0) and c<m:
+        while (s[a]==0 or s[b]==0) and c<m: #choix de deux clients dans une route précedante et suivante
             a = rd.randint(1,pivot-1)
             b = rd.randint(pivot+1,len(s)-1)
             c =c+1
   
-        
-        n_s = applique_mouvement(n_s,[a,b])
+        n_s = applique_mouvement(n_s,[a,b]) #permutation des deux clients
         return (n_s,[2,a,b])
     
     def Intra_Route_Shift(self,s, Indice_0):
         """
         3. Intra-Route Shift: fonction de voisinage qui effectue le déplacement d'un client vers une autre position sur la même route.
-        comportement a vérifier
         """
         #print("Intra_Route_Shift")
         if not Indice_0:
             a,b = 0,len(s)
-        else:
+        else: #choix d'une route (segment de la solution)
             I = [0] + Indice_0.copy() +[len(s)]
             i = rd.randint(0,len(I)-2)
             a,b = I[i],I[i+1]
         if abs(a-b)<4:
             return (s,[])
-        gauche = s[:a+1]
-        droite = s[b:]
-        route = s[a+1:b]
-        i_client = rd.randint(1, len(route) - 2)
-        client = route.pop(i_client)
-        i_insert = rd.randint(0, len(route)-1)
-        new_route = route[:i_insert] + [client] + route[i_insert:]
-        n_s = gauche + new_route + droite
+        gauche = s[:a+1] #segement gauche la solution
+        droite = s[b:] #segment droit de la solution
+        route = s[a+1:b] #route choisit
+        i_client = rd.randint(1, len(route) - 2) #choix d'un client dans cette route
+        client = route.pop(i_client) #supresion du client dans cette route
+        i_insert = rd.randint(0, len(route)-1) #insertion a une nouvelle position
+        new_route = route[:i_insert] + [client] + route[i_insert:] 
+        n_s = gauche + new_route + droite #concaténation des 3 segment pour reformer la solution
         return (n_s,[3,-i_client,-i_insert])
 
     
@@ -148,30 +150,25 @@ class mouvement:
         4. Inter-Route Shift: fonction de voisinage qui effectue le déplacement d'un client d’une route à une autre.
         Principe : on choisi un retour au depot qui sert de pivot, on choisi un client qui est visiter avant et un après, puis on les échanges
 
-        /!\ dicutable sur le fonctionnement : le deplacement s'effectu seulement sur les extrémités de la route
         """
         #print("Inter_Route_Shift")
         n_s = s.copy()
         n = len(s)
         if not Indice_0:
             return (n_s,[])
-        
 
         c= rd.randint(0,len(Indice_0)-1)
         pivot = Indice_0[c] #choisi un zero aléatroire dans la liste des retour au depot intermédiaire
         
         a,b = rd.randint(0,pivot),rd.randint(pivot+1,n-1)
-        d = n - pivot #pour choisir le plus long segment de la route
+        d = n - pivot #pour choisir le plus long segment de la route (soit gauche soit droit)
         if d>pivot:
-            
             n_s = applique_mouvement(n_s,[pivot,b])
             return (n_s,[4,pivot,b])
         else:
             n_s = applique_mouvement(n_s,[a, pivot])
             return (n_s,[4,a,pivot])
 
-
-    
     
     def Two_Intra_Route_Swap(self,s,I):
         """5. Two Intra-Route Swap: fonction de voisinage qui consiste en l'échange de clients sur la même route,
@@ -188,8 +185,6 @@ class mouvement:
             n_s[i_1], n_s[i_1+1], n_s[i_2], n_s[i_2+1] = n_s[i_2], n_s[i_2+1],n_s[i_1], n_s[i_1+1]
             return n_s,[5,i_1,i_2]
 
-
-        
         Indice_0 =[0]+I+[len(s)]
         i_zero = rd.randint(0,len(Indice_0)-2)
         a,b = Indice_0[i_zero], Indice_0[i_zero+1]
@@ -267,33 +262,33 @@ class mouvement:
     
 
     def Action(self,s):
-        a = rd.randint(0,7)
-        #a = 1
+        a = rd.randint(1,8) #choix d'une action aléatoire
+        
         Indice_0 = self.find_zero(s)
-        if a ==0:
+        if a ==1:
             #print("Intra_Route_Swap")
             return self.Intra_Route_Swap(s,Indice_0)
-        if a==1:
+        if a==2:
             #print("Inter_Route_Swap")
             return self.Inter_Route_Swap(s,Indice_0)
-        if a ==2:
+        if a ==3:
             #print("Intra_Route_Shift")
             return self.Intra_Route_Shift(s,Indice_0)
-        if a ==3:
+        if a ==4:
            # print("Inter_Route_Shift")
             return self.Inter_Route_Shift(s,Indice_0)
-        if a ==4:
-            #print("pop_small_route")
-            return self.pop_small_route(s,Indice_0)
         if a ==5:
-            #print("pop_random_route")
-            return self.pop_random_route(s,Indice_0)
-        if a ==6:
             #print("Two_Intra_Route_Swap")
             return self.Two_Intra_Route_Swap(s,Indice_0)
-        if a ==7:
+        if a ==6:
             #print("Two_Intra_Route_Shift")
             return self.Two_Intra_Route_Shift(s,Indice_0)
+        if a ==7:
+            #print("pop_small_route")
+            return self.pop_small_route(s,Indice_0)
+        if a ==8:
+            #print("pop_random_route")
+            return self.pop_random_route(s,Indice_0)
 """
 mvt = mouvement()
 s = [0, 26, 42, 90, 4, 91, 46, 17, 45, 63, 38, 2, 21, 69, 65, 84, 6, 0, 39, 25, 59, 76, 93, 75, 67, 99, 7, 58, 15, 24, 18, 28, 88, 16, 0, 64, 50, 54, 0]
@@ -302,3 +297,4 @@ print("avant",s)
 s,mv = mvt.Action(s)
 print("après",s)
 """
+
