@@ -243,7 +243,7 @@ class mouvement:
                 etape_min = d
                 indice = k
         n_s.pop(Indice_0[indice])
-        return (n_s,[7,Indice_0[indice]])
+        return (n_s,[7,Indice_0[indice],Indice_0[indice]])
 
     
     def pop_random_route(self,s,Indice_0):
@@ -258,7 +258,7 @@ class mouvement:
         zero = rd.choice(Indice_0)
         n_s.pop(zero)
         Indice_0 = self.find_zero(n_s)
-        return n_s,[8,zero]
+        return n_s,[8,zero,zero]
     
 
     def action(self, a, s):
