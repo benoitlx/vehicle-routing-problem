@@ -117,27 +117,21 @@ def gen_vois(s,taille_vois,Tabou,max_tab):
     V = []
     state = q_agent.previous_state
     while c<taille_vois:
-        action = q_agent.e_greedy(state)
-        #print(action)
-        new_sol, mv = perform_action(s, action)
+        a = q_agent.e_greedy(state)
+        new_sol, mv = perform_action(s, a)
         while mv ==[]:
-            action = q_agent.e_greedy(state)
-            #print(action)
-            new_sol, mv = perform_action(s, action)
+            a = q_agent.e_greedy(state)
+            new_sol, mv = perform_action(s, a)
+            cout_solution= cout(new_sol,clients)
+            reward = q_agent.reward(cout_solution, eval)
+            q_agent.update_q_table(q_agent.previous_state-1,  a, reward, a)
+            q_agent.previous_state = a-1
         mv.append(eval)
-        #capacity(new_sol,60)
-        #new_eval = cout(new_sol, clients)
-        #reward = q_agent.reward(new_eval, eval)
-        #q_agent.update_q_table(state, action, reward, mv[0]-1)
-        #q_agent.previous_state = mv[0]-1
-        if mv not in Tabou and new_sol not in V:
+        mv_opposer = [mv[0],mv[2],mv[1],eval]
+
+        if  new_sol not in V and mv_opposer not in Tabou: #mv not in Tabou and
             V.append((new_sol,mv))
             c = c+1
-        else:
-            b =b+1
-            if b>100:
-                Tabou.pop(0)
-                b=b-1
     return V
 
 q_agent = QLearningAgent()
@@ -175,13 +169,6 @@ def TB_RL(b_s,nb_iter_max, max_tabou, taille_vois,Capacite=1000):
         cout_solution = cout(s,clients)
         if cout_solution<cout(s_etoile,clients):
             s_etoile = s.copy()
-            #print(s_etoile)
-            reward = q_agent.reward(cout_solution, meilleur_cout[-1])
-            q_agent.update_q_table(q_agent.previous_state-1,  mv[0]-1, reward, mv[0]-1)
-            q_agent.previous_state = mv[0]-1
-            np.set_printoptions(linewidth=np.inf)
-            print(q_agent.q_table)
-            print("\n")
             meilleur_cout.append(cout_solution)
             meil_iter = nbiter
        
